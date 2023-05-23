@@ -103,7 +103,7 @@ class Customer
 			else {
 				cout << "Nam" << "\t\t";
 			}
-			cout << phoneNumber << "\t" << address << "\t\t";
+			cout << phoneNumber << "\t" << address << "\t";
 			if (status == 1) {
 				cout << "Đang hoạt động";
 			}
