@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class Customer 
+class Staff 
 {
 	private:
 		int id; // mã khách hàng
@@ -14,26 +14,32 @@ class Customer
 		int gender; // giới tính 0 - nữ, 1 - nam
 		string phoneNumber; // số điện thoại
 		string address; // địa chỉ
+		string email; // email
+		int level; // phân quyền 0 - nhân viên, 1 - quản lý
 		int status; // trạng thái hoạt động 0 - đang bị chặn, 1 - đang hoạt động
 
 	public:
-		Customer() {
+		Staff() {
 			this->id = 0;
 			this->name = "";
 			this->birthday = "";
 			this->gender = 0;
 			this->phoneNumber = "";
 			this->address = "";
+			this->email = "";
+			this->level = 0;
 			this->status = 0;
 		}
 
-		Customer(int id, string name, string birthday, int gender, string phoneNumber, string address, int status) {
+		Staff(int id, string name, string birthday, int gender, string phoneNumber, string address, string email, int level, int status) {
 			this->id = id;
 			this->name = name;
 			this->birthday = birthday;
 			this->gender = gender;
 			this->phoneNumber = phoneNumber;
 			this->address = address;
+			this->email = email;
+			this->level = level;
 			this->status = status;
 		}
 		
@@ -85,6 +91,22 @@ class Customer
 			this->address = address;
 		}
 
+		string getEmail() {
+			return this->email;
+		}
+
+		void setEmail(string email) {
+			this->email = email;
+		}
+
+		int getLevel() {
+			return this->level;
+		}
+
+		void setLevel(int level) {
+			this->level = level;
+		}
+
 		int getStatus() {
 			return this->status;
 		}
@@ -101,8 +123,14 @@ class Customer
 			else {
 				cout << "Nam" << "\t\t";
 			}
-			cout << phoneNumber << "\t" << address << "\t";
-			if (status == 1) {
+			cout << phoneNumber << "\t" << address << "\t"<< email << "\t";
+			if (level == 1) {
+				cout << "Quản lý" << "\t";
+			}
+			else {
+				cout << "Nhân viên" << "\t";
+			}
+			if (level == 1) {
 				cout << "Đang hoạt động";
 			}
 			else {
@@ -111,7 +139,7 @@ class Customer
 			cout << endl;
 		}
 
-		Customer enterInfo() {
+		Staff enterInfo() {
 			cout << "Mã khách hàng: ";
 			cin >> id;
 			cin.ignore();
@@ -126,9 +154,13 @@ class Customer
 			getline(cin, phoneNumber);
 			cout << "Địa chỉ: ";
 			getline(cin, address);
+			cout << "Email: ";
+			getline(cin, email);
+			cout << "Phân quyền (0 - nhân viên, 1 - quản lý): ";
+			cin >> level;
 			cout << "Trạng thái hoạt động (0 - đang bị chặn, 1 - đang hoạt động): ";
 			cin >> status;
-			return Customer(id, name, birthday, gender, phoneNumber, address, status);
+			return Staff(id, name, birthday, gender, phoneNumber, address, email, level, status);
 		}
 
 };

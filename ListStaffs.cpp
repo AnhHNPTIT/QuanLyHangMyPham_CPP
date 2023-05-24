@@ -3,25 +3,25 @@
 #include <iomanip>
 #include <fstream>
 #include <ctime>
-#include "Customer.cpp"
+#include "Staff.cpp"
 
 using namespace std;
 
-class ListCustomers
+class ListStaffs
 {
 	private:
 		struct Node {
-			Customer* data;
+			Staff* data;
 			Node* next;
 		};
 		Node* head;
 
 	public:
-		ListCustomers() {
+		ListStaffs() {
 			head = NULL;
 		}
 
-		~ListCustomers() {
+		~ListStaffs() {
 			while (head != NULL) {
 				Node* temp = head;
 				head = head->next;
@@ -30,7 +30,7 @@ class ListCustomers
 			}
 		}
 		
-		void addCustomer(Customer* data) {
+		void addStaff(Staff* data) {
 			Node* newNode = new Node;
 			newNode->data = data;
 			newNode->next = NULL;
@@ -47,21 +47,21 @@ class ListCustomers
 			}
 		}
 
-		void updateCustomer(Customer* customer) {
+		void updateStaff(Staff* staff) {
 			Node* current = head;
 			while (current != NULL) {
-				if (current->data->getId() == customer->getId()) {
-					current->data = customer;
+				if (current->data->getId() == staff->getId()) {
+					current->data = staff;
 					return;
 				}
 				current = current->next;
 			}
-			cout << "Khách hàng không tồn tại" << endl;
+			cout << "Nhân viên không tồn tại" << endl;
 		}
 
-		void deleteCustomer(int id) {
+		void deleteStaff(int id) {
 			if (head == NULL) {
-				cout << "Danh sách khách hàng trống" << endl;
+				cout << "Danh sách nhân viên trống" << endl;
 				return;
 			}
 			if (head->data->getId() == id) {
@@ -69,7 +69,7 @@ class ListCustomers
 				head = head->next;
 				delete temp->data;
 				delete temp;
-				cout << "Xóa khách hàng thành công" << endl;
+				cout << "Xóa nhân viên thành công" << endl;
 				return;
 			}
 			Node* prev = head;
@@ -79,16 +79,16 @@ class ListCustomers
 					prev->next = current->next;
 					delete current->data;
 					delete current;
-					cout << "Xóa khách hàng thành công" << endl;
+					cout << "Xóa nhân viên thành công" << endl;
 					return;
 				}
 				prev = current;
 				current = current->next;
 			}
-			cout << "Khách hàng không tồn tại" << endl;
+			cout << "Nhân viên không tồn tại" << endl;
 		}
 
-		void searchCustomer(string name) {
+		void searchStaff(string name) {
 			int count = 0;
 			Node* current = head;
 			while (current != NULL) {
@@ -99,21 +99,21 @@ class ListCustomers
 				current = current->next;
 			}
 			if (count == 0) {
-				cout << "Khách hàng không tồn tại" << endl;
+				cout << "Nhân viên không tồn tại" << endl;
 			}
 		}
 
-		void enterListCustomers(int &num) {		
+		void enterListStaffs(int &num) {			
 			for (int i = 1; i <= num; i++) {
-				cout << "Nhập thông tin khách hàng thứ " << i << ":" << endl;
-				Customer* customer = new Customer();
-				customer->enterInfo();
-        		addCustomer(customer);
+				cout << "Nhập thông tin nhân viên thứ " << i << ":" << endl;
+				Staff* staff = new Staff();
+				staff->enterInfo();
+        		addStaff(staff);
 			}
 		}
 
-		void displayListCustomers() {
-			cout << "Mã khách hàng\t" << "Tên khách hàng\t\t" << "Ngày sinh\t" << "Giới tính\t" << "Số điện thoại\t" << "Địa chỉ\t\t\t\t" <<  "Trạng thái" << endl;
+		void displayListStaffs() {
+			cout << "Mã nhân viên\t" << "Tên nhân viên\t\t" << "Ngày sinh\t" << "Giới tính\t" << "Số điện thoại\t" << "Địa chỉ\t\t\t\t" <<  "Email\t\t" << "Phân quyền\t" << "Trạng thái" << endl;
 			Node* current = head;
 			while (current != NULL) {
 				current->data->displayInfo();
@@ -121,28 +121,30 @@ class ListCustomers
 			}
 		}
 
-		void saveListCustomers() {
-			ofstream file("customers.csv",ios::out);
+		void saveListStaffs() {
+			ofstream file("staffs.csv",ios::out);
 			Node* current = head;
 			while (current != NULL) {
-				Customer* customer = current->data;
-				file << customer->getId() << "," << customer->getName() << "," << customer->getBirthday() << "," << customer->getGender() << ","
-					<< customer->getPhoneNumber() << "," << customer->getAddress() << "," << customer->getStatus() << endl;
+				Staff* staff = current->data;
+				file << staff->getId() << "," << staff->getName() << "," << staff->getBirthday() << "," << staff->getGender() << ","
+					<< staff->getPhoneNumber() << "," << staff->getAddress() << "," << staff->getEmail() << "," << staff->getLevel() << "," << staff->getStatus() << endl;
 				current = current->next;
 			}
 			file.close();
 		}
 
-		void readFileCustomers() {
+		void readFileStaffs() {
 			int id; 
 			string name; 
 			string birthday; 
 			int gender; 
 			string phoneNumber; 
 			string address; 
+			string email; 
+			int level; 
 			int status; 
 
-			ifstream file("customers.csv",ios::in);
+			ifstream file("staffs.csv",ios::in);
 			if(!file){
 				cout << "Error:can not open file";
 				return;
@@ -160,17 +162,21 @@ class ListCustomers
 				phoneNumber = line;
 				getline(file, line, ',');
 				address = line;
+				getline(file, line, ',');
+				email = line;
+				getline(file, line, ',');
+				level = atoi(line.c_str());
 				getline(file, line, '\n');
 				status = atoi(line.c_str());
 
-				Customer* customer = new Customer(id, name, birthday, gender, phoneNumber, address, status);
-				addCustomer(customer);
+				Staff* staff = new Staff(id, name, birthday, gender, phoneNumber, address, email, level, status);
+				addStaff(staff);
 			}
 			// Đóng file
 			file.close();
 		}
 
-		void sortListCustomersByIdASC() {
+		void sortListStaffsByIdASC() {
 			if (head == NULL || head->next == NULL) {
 				return;
 			}
@@ -182,7 +188,7 @@ class ListCustomers
 				current = head;
 				while (current->next != tail) {
 					if (current->data->getId() > current->next->data->getId()) {
-						Customer* temp = current->data;
+						Staff* temp = current->data;
 						current->data = current->next->data;
 						current->next->data = temp;
 						swapped = true;
@@ -193,7 +199,7 @@ class ListCustomers
 			} while (swapped);
 		}
 
-		void sortListCustomersByNameDESC() {
+		void sortListStaffsByNameDESC() {
 			if (head == NULL || head->next == NULL) {
 				return;
 			}
@@ -205,7 +211,7 @@ class ListCustomers
 				current = head;
 				while (current->next != tail) {
 					if (current->data->getName() < current->next->data->getName()) {
-						Customer* temp = current->data;
+						Staff* temp = current->data;
 						current->data = current->next->data;
 						current->next->data = temp;
 						swapped = true;
@@ -216,18 +222,30 @@ class ListCustomers
 			} while (swapped);
 		}
 
-		Customer* findCustomerWithIdMax() {
+		Staff* findOldestStaff() {
 			if (head == NULL) {
 				return NULL;
 			}
 
+			time_t currentTime = time(NULL);
+			tm* localTime = localtime(&currentTime);
+			int currentYear = localTime->tm_year + 1900;
+
 			Node* current = head;
-			Customer* result = current->data;
-			int idMax = result->getId();
+			Staff* result = current->data;
+			string birthday = result->getBirthday();
+			string getYear = birthday.substr(0, 4);
+			int year = atoi(getYear.c_str());
+			int ageMax = currentYear - year;
 
 			while (current != NULL) {
-				if (current->data->getId() > idMax) {
-					idMax = current->data->getId();
+				birthday = current->data->getBirthday();
+				getYear = birthday.substr(0, 4);
+				year = atoi(getYear.c_str());
+				int age = currentYear - year;
+
+				if (age > ageMax) {
+					ageMax = age;
 					result = current->data;
 				}
 				current = current->next;
@@ -236,18 +254,30 @@ class ListCustomers
 			return result;
 		}
 
-		Customer* findCustomerWithIdMin() {
+		Staff* findYoungestStaff() {
 			if (head == NULL) {
 				return NULL;
 			}
 
+			time_t currentTime = time(NULL);
+			tm* localTime = localtime(&currentTime);
+			int currentYear = localTime->tm_year + 1900;
+
 			Node* current = head;
-			Customer* result = current->data;
-			int idMin = result->getId();
+			Staff* result = current->data;
+			string birthday = result->getBirthday();
+			string getYear = birthday.substr(0, 4);
+			int year = atoi(getYear.c_str());
+			int ageMax = currentYear - year;
 
 			while (current != NULL) {
-				if (current->data->getId() < idMin) {
-					idMin = current->data->getId();
+				birthday = current->data->getBirthday();
+				getYear = birthday.substr(0, 4);
+				year = atoi(getYear.c_str());
+				int age = currentYear - year;
+
+				if (age < ageMax) {
+					ageMax = age;
 					result = current->data;
 				}
 				current = current->next;
@@ -256,7 +286,7 @@ class ListCustomers
 			return result;
 		}
 
-		int countCustomers() {
+		int countStaffs() {
 			int result = 0;
 			Node* current = head;
 			while (current != NULL) {
@@ -268,7 +298,7 @@ class ListCustomers
 
 		float calAvgAge() {
 			int sumAge = 0;
-			int numCustomers = countCustomers();
+			int numStaffs = countStaffs();
 
 			time_t currentTime = time(NULL);
 			tm* localTime = localtime(&currentTime);
@@ -283,12 +313,12 @@ class ListCustomers
 				sumAge += (currentYear - year);
 				current = current->next;
 			}
-			return static_cast<float>(sumAge)/static_cast<float>(numCustomers);
+			return static_cast<float>(sumAge)/static_cast<float>(numStaffs);
 		}
 
 		float calRatioWomen() {
 			int numWomen = 0;
-			int numCustomers = countCustomers();
+			int numStaffs = countStaffs();
 
 			Node* current = head;
 			while (current != NULL) {
@@ -297,10 +327,10 @@ class ListCustomers
 				}
 				current = current->next;
 			}
-			return static_cast<float>(numWomen)*100/static_cast<float>(numCustomers);
+			return static_cast<float>(numWomen)*100/static_cast<float>(numStaffs);
 		}
 
-		void statsBlockedCustomer() {
+		void statsBlockedStaff() {
 			int count = 0;
 			Node* current = head;
 			while (current != NULL) {
@@ -315,21 +345,13 @@ class ListCustomers
 			}
 		}
 
-		void statsCustomersByAge() {
+		void statsActivedManagers() {
 			int count = 0;
-			time_t currentTime = time(NULL);
-			tm* localTime = localtime(&currentTime);
-			int currentYear = localTime->tm_year + 1900;
-
 			Node* current = head;
 			while (current != NULL) {
-				string birthday = current->data->getBirthday();
-				string getYear = birthday.substr(0, 4);
-				int year = atoi(getYear.c_str());
-
-				int age = currentYear - year;
-				if (age >= 18 && age <= 30) {
+				if (current->data->getStatus() == 1 && current->data->getLevel() == 1) {
 					current->data->displayInfo();
+					count++;
 				}
 				current = current->next;
 			}
@@ -338,11 +360,11 @@ class ListCustomers
 			}
 		}
 
-		void statsWomen() {
+		void statsActivedStaffs() {
 			int count = 0;
 			Node* current = head;
 			while (current != NULL) {
-				if (current->data->getGender() == 0) {
+				if (current->data->getStatus() == 1 && current->data->getLevel() == 0) {
 					current->data->displayInfo();
 					count++;
 				}
